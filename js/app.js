@@ -2,12 +2,7 @@
 // APP.JS - Lógica de Autenticação + Supabase
 // =============================================
 
-// Inicializa o cliente Supabase
-console.log('[JBIso] SUPABASE_URL:', SUPABASE_URL);
-console.log('[JBIso] SUPABASE_ANON_KEY:', SUPABASE_ANON_KEY ? SUPABASE_ANON_KEY.substring(0, 20) + '...' : 'MISSING');
-
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-console.log('[JBIso] Cliente Supabase inicializado:', supabase ? 'OK' : 'FALHOU');
 
 // -----------------------------------------
 // LOGIN
@@ -30,44 +25,32 @@ async function handleLogin(event) {
 
     setLoading(btn, true);
 
-    console.log('[JBIso] Tentando login com email:', email);
-
     try {
         const { data, error } = await supabase.auth.signInWithPassword({
             email: email,
             password: password
         });
 
-        console.log('[JBIso] Resposta do login - error:', error);
-        console.log('[JBIso] Resposta do login - data:', data);
-
         if (error) {
             setLoading(btn, false);
-            console.error('[JBIso] CÓDIGO DO ERRO:', error.code || 'N/A');
-            console.error('[JBIso] MENSAGEM DO ERRO:', error.message);
-            console.error('[JBIso] STATUS DO ERRO:', error.status || 'N/A');
-            console.error('[JBIso] ERRO COMPLETO:', JSON.stringify(error, null, 2));
-
-            const detalhes = 'Código: ' + (error.code || 'N/A') + '\nMensagem: ' + error.message + '\nStatus: ' + (error.status || 'N/A');
-            alert('ERRO AO FAZER LOGIN:\n\n' + detalhes);
-
-            showError('Erro ao fazer login. Verifique o console (F12) para detalhes.');
+            console.error('[JBIso] Login error:', error.code, error.message);
+            showError('E-mail ou senha incorretos.');
             return;
         }
 
-        console.log('[JBIso] Login bem-sucedido! user:', data.user?.id, 'email:', data.user?.email);
-        alert('Login OK! Usuário: ' + (data.user?.email || 'N/A') + '\nRedirecionando para o painel...');
+        console.log('[JBIso] Login OK:', data.user?.email);
+        showError('Login realizado! Redirecionando...');
+        document.getElementById('error-message').style.background = 'var(--color-success, #10b981)';
+        document.getElementById('error-message').style.color = '#fff';
 
-        window.location.href = 'painel.html';
+        setTimeout(() => {
+            window.location.href = 'painel.html';
+        }, 500);
 
     } catch (err) {
         setLoading(btn, false);
-        console.error('[JBIso] EXCEÇÃO NO LOGIN:', err);
-        console.error('[JBIso] Tipo do erro:', err?.constructor?.name);
-        console.error('[JBIso] Mensagem:', err?.message);
-        console.error('[JBIso] Stack:', err?.stack);
-        alert('EXCEÇÃO AO FAZER LOGIN:\n\n' + (err?.message || err));
-        showError('Erro de conexão. Verifique o console (F12).');
+        console.error('[JBIso] Login exception:', err);
+        showError('Erro de conexão. Tente novamente.');
     }
 }
 
@@ -77,13 +60,12 @@ async function handleLogin(event) {
 async function checkSession() {
     try {
         const { data: { session }, error } = await supabase.auth.getSession();
-        console.log('[JBIso] checkSession - session:', session ? 'EXISTE (user: ' + session.user?.email + ')' : 'NULL');
         if (error) {
-            console.error('[JBIso] checkSession - erro:', error.message);
+            console.error('[JBIso] checkSession error:', error.message);
         }
         return session;
     } catch (err) {
-        console.error('[JBIso] checkSession - EXCEÇÃO:', err);
+        console.error('[JBIso] checkSession exception:', err);
         return null;
     }
 }
@@ -91,12 +73,13 @@ async function checkSession() {
 // -----------------------------------------
 // BUSCAR LINK DO GOOGLE DRIVE
 // -----------------------------------------
-async function getUserDriveLink() {
+async function getUserDriveLink(session) {
     try {
-        const { data: { user } } = await supabase.auth.getUser();
-        console.log('[JBIso] getUserDriveLink - user:', user ? user.id + ' (' + user.email + ')' : 'NULL');
-
-        if (!user) return null;
+        const user = session?.user;
+        if (!user) {
+            console.error('[JBIso] getUserDriveLink: no user in session');
+            return null;
+        }
 
         const { data, error } = await supabase
             .from('usuarios')
@@ -104,18 +87,14 @@ async function getUserDriveLink() {
             .eq('id', user.id)
             .single();
 
-        console.log('[JBIso] getUserDriveLink - SELECT data:', data);
         if (error) {
-            console.error('[JBIso] getUserDriveLink - SELECT código:', error.code || 'N/A');
-            console.error('[JBIso] getUserDriveLink - SELECT mensagem:', error.message);
-            console.error('[JBIso] getUserDriveLink - SELECT details:', error.details);
-            console.error('[JBIso] getUserDriveLink - SELECT hint:', error.hint);
+            console.error('[JBIso] getUserDriveLink SELECT error:', error.code, error.message);
             return null;
         }
 
         return data;
     } catch (err) {
-        console.error('[JBIso] getUserDriveLink - EXCEÇÃO:', err);
+        console.error('[JBIso] getUserDriveLink exception:', err);
         return null;
     }
 }
@@ -180,17 +159,13 @@ async function loadPainel() {
     const session = await checkSession();
 
     if (!session) {
-        alert('[JBIso] Nenhuma sessão ativa. Redirecionando para login.');
         window.location.href = 'login.html';
         return;
     }
 
-    alert('[JBIso] Sessão ativa! Buscando dados do usuário...');
-
-    const userData = await getUserDriveLink();
+    const userData = await getUserDriveLink(session);
 
     if (!userData) {
-        alert('[JBIso] userData é NULL! A tabela "usuarios" pode não ter uma linha com o ID do usuário.\n\nVerifique o console (F12) para detalhes do erro SELECT.');
         document.getElementById('painel-content').innerHTML = `
             <div class="painel-card">
                 <div class="painel-icon">!</div>
@@ -203,8 +178,6 @@ async function loadPainel() {
         document.getElementById('painel-content').style.display = 'block';
         return;
     }
-
-    alert('[JBIso] Dados carregados OK! Email: ' + userData.email);
 
     document.getElementById('user-email').textContent = userData.email;
     document.getElementById('drive-link').href = userData.link_google_drive;

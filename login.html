@@ -56,13 +56,6 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        if (typeof window.supabase === 'undefined' || typeof window.supabase.createClient !== 'function') {
-            alert('ERRO CRÍTICO: A biblioteca Supabase NÃO foi carregada do CDN.\n\nVerifique sua conexão com a internet ou abra o console (F12) → aba Network.');
-        } else {
-            console.log('[JBIso] Supabase CDN carregado OK');
-        }
-    </script>
     <script src="js/config.js"></script>
     <script src="js/app.js"></script>
     <script>
@@ -74,7 +67,7 @@
                 }
             });
         } else {
-            console.error('[JBIso] Variáveis ou funções não definidas - supabase:', typeof supabase, 'updateNav:', typeof updateNav);
+            console.error('[JBIso] Supabase or functions not loaded');
         }
     </script>
 
