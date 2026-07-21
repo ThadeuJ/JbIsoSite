@@ -14,3 +14,4 @@
 
 const SUPABASE_URL = 'https://yshhvmqgfzqzsphpxdsa.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzaGh2bXFnZnpxenNwaHB4ZHNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1OTU5OTYsImV4cCI6MjEwMDE3MTk5Nn0.WVWNpLLDpKyYfwQD_1HYKz2Np0CI9A1_MdZjAog0kLs';
+
