@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JBIso - Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-page">
+
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <span class="logo-icon">JBI</span>
+                <h1>JBIso</h1>
+            </div>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Sobre</a>
+                <a href="login.html" class="nav-link active" id="nav-login">Login</a>
+                <a href="#" class="nav-link" id="nav-sair" style="display: none;" onclick="handleLogout(); return false;">Sair</a>
+            </nav>
+            <button class="menu-toggle" aria-label="Menu" onclick="toggleMenu()">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <main class="login-wrapper">
+        <div class="login-card">
+            <div class="login-header">
+                <span class="login-icon">JBI</span>
+                <h2>Bem-vindo de volta</h2>
+                <p>Faça login para acessar sua conta</p>
+            </div>
+
+            <div id="error-message" class="error-message" style="display: none;"></div>
+
+            <form class="login-form" id="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" placeholder="seu@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-login" id="btn-login">Entrar</button>
+            </form>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-bottom">
+            <p>&copy; 2026 JBIso. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        if (typeof window.supabase === 'undefined' || typeof window.supabase.createClient !== 'function') {
+            alert('ERRO CRÍTICO: A biblioteca Supabase NÃO foi carregada do CDN.\n\nVerifique sua conexão com a internet ou abra o console (F12) → aba Network.');
+        } else {
+            console.log('[JBIso] Supabase CDN carregado OK');
+        }
+    </script>
+    <script src="js/config.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        if (typeof supabase !== 'undefined' && typeof updateNav === 'function') {
+            updateNav();
+            checkSession().then(session => {
+                if (session) {
+                    window.location.href = 'painel.html';
+                }
+            });
+        } else {
+            console.error('[JBIso] Variáveis ou funções não definidas - supabase:', typeof supabase, 'updateNav:', typeof updateNav);
+        }
+    </script>
+
+</body>
+</html>

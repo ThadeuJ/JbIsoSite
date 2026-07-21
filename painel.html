@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JBIso - Painel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="painel-page">
+
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <span class="logo-icon">JBI</span>
+                <h1>JBIso</h1>
+            </div>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Sobre</a>
+                <a href="login.html" class="nav-link" id="nav-login" style="display: none;">Login</a>
+                <a href="#" class="nav-link" id="nav-sair" onclick="handleLogout(); return false;">Sair</a>
+            </nav>
+            <button class="menu-toggle" aria-label="Menu" onclick="toggleMenu()">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <main class="painel-wrapper">
+        <!-- Loading State -->
+        <div class="painel-card" id="painel-loading">
+            <div class="loading-pulse">
+                <div class="pulse-dot"></div>
+                <div class="pulse-dot"></div>
+                <div class="pulse-dot"></div>
+            </div>
+            <p class="loading-text">Carregando seus dados...</p>
+        </div>
+
+        <!-- Content State -->
+        <div class="painel-card" id="painel-content" style="display: none;">
+            <div class="painel-icon">
+                <span class="login-icon">JBI</span>
+            </div>
+            <h2>Bem-vindo!</h2>
+            <p class="user-email" id="user-email"></p>
+
+            <div class="drive-section">
+                <div class="drive-label">Seu Link do Google Drive</div>
+                <a href="#" target="_blank" rel="noopener noreferrer" class="drive-btn" id="drive-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                        <polyline points="15 3 21 3 21 9"/>
+                        <line x1="10" y1="14" x2="21" y2="3"/>
+                    </svg>
+                    Abrir Google Drive
+                </a>
+            </div>
+
+            <button class="btn-logout" onclick="handleLogout()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                    <polyline points="16 17 21 12 16 7"/>
+                    <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+                Sair da conta
+            </button>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-bottom">
+            <p>&copy; 2026 JBIso. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        loadPainel();
+        updateNav();
+    </script>
+
+</body>
+</html>
