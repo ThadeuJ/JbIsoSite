@@ -2,7 +2,7 @@
 // APP.JS - Lógica de Autenticação + Supabase
 // =============================================
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     auth: {
         storage: window.localStorage,
         autoRefreshToken: true,
@@ -32,7 +32,7 @@ async function handleLogin(event) {
     setLoading(btn, true);
 
     try {
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
             email: email,
             password: password
         });
@@ -65,7 +65,7 @@ async function handleLogin(event) {
 // -----------------------------------------
 async function checkSession() {
     try {
-        const { data: { session }, error } = await supabase.auth.getSession();
+        const { data: { session }, error } = await supabaseClient.auth.getSession();
         if (error) {
             console.error('[JBIso] checkSession error:', error.message);
         }
@@ -87,7 +87,7 @@ async function getUserDriveLink(session) {
             return null;
         }
 
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('usuarios')
             .select('link_google_drive, email')
             .eq('id', user.id)
@@ -110,7 +110,7 @@ async function getUserDriveLink(session) {
 // -----------------------------------------
 async function handleLogout() {
     try {
-        await supabase.auth.signOut();
+        await supabaseClient.auth.signOut();
         window.location.href = 'login.html';
     } catch (err) {
         console.error('Logout error:', err);
