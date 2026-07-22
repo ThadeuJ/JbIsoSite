@@ -10,6 +10,7 @@ jobs:
     steps:
       - name: Ping Supabase REST API
         run: |
-          curl -s "${{ secrets.SUPABASE_URL }}/rest/v1/" \
-            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+          curl -f -s "https://yshhvmqgfzqzsphpxdsa.supabase.co/rest/v1/usuarios?select=id&limit=1" \
+            -H "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzaGh2bXFnZnpxenNwaHB4ZHNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1OTU5OTYsImV4cCI6MjEwMDE3MTk5Nn0.WVWNpLLDpKyYfwQD_1HYKz2Np0CI9A1_MdZjAog0kLs" \
+            -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzaGh2bXFnZnpxenNwaHB4ZHNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1OTU5OTYsImV4cCI6MjEwMDE3MTk5Nn0.WVWNpLLDpKyYfwQD_1HYKz2Np0CI9A1_MdZjAog0kLs" \
             -o /dev/null
